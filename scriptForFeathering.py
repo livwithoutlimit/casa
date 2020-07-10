@@ -1,5 +1,6 @@
 """
-This script allows you to feather high- and low-resolution data,
+This script allows you to feather high- and low-resolution 
+(i.e. interferometric and single-dish) data,
 specifically those observed with ALMA.
 
 This script is not intended to be executed in its entirety.
@@ -10,6 +11,8 @@ final feathered images to be stored. Intermediate files will be stored
 in this directory as well. 
 
 Script compiled by O. H. Wilkins with the help of S. Wood and M. Hoffman.
+
+Lines beginning with "ACHTUNG!" after the INPUTS section warn you that data-specific information is needed at these lines.
 
 """
 
@@ -22,25 +25,24 @@ Script compiled by O. H. Wilkins with the help of S. Wood and M. Hoffman.
 # TP = Total Power (or low-resolution data)
 # 7m = ACA (or high-resolution data)
 
-SourceName = 'BGPS3053'
-BandName = 'upper'
+SourceName = '' # Name of source e.g. BGPS4449, Orion_KL
+BandName = '' # Name of band; useful for observations with multiple LO settings e.g. lower, Band6
 SourceBand = SourceName+'_'+BandName
-spwTP = 'spw17_TP'
-spw7m = 'spw16_7m'
+spwTP = '' # Name for the low-resolution / single-dish data; indicate if feathering images for multiple spectral windows e.g. spw17_TP
+spw7m = '' # Name for the high-resolution / interferometric data; indicate if feathering images for multiple spectral windows e.g. spw16_7m
 
 # Enter the path to the FITS image for the low-resolution data
 # you'd like to import for feathering.
-TPfits = '../member.uid___A001_X133d_X2db7/product/member.uid___A001_X133d_X2db7.BGPS3053.spw17.I.sd.im.fits'
-ACAimage = '../member.uid___A001_X133d_X2db5/calibrated/BGPS3053_upper.spw16_CH3OH.image'
+TPfits = '' # Enter the path of the low-resolution / single-dish *.FITS file.
+ACAimage = '' # Enter the path of the high-resolution / interferometric CASA *.image file.
 
-# Enter the path for the CASA image for the high-resolution 
+# Enter the path for the CASA primary beam file for the high-resolution 
 # data you'd like to feather. 
-ACApb = '../member.uid___A001_X133d_X2db5/calibrated/BGPS3053_upper.spw16_CH3OH.pb'
+ACApb = '' # This is a *.pb file.
 
 
 # These lines automatically generate your
 # file naming conventions from above. 
-
 ParentTP = SourceBand+'.'+spwTP
 Parent7m = SourceBand+'.'+spw7m
 
@@ -62,7 +64,7 @@ imhead(Parent7m+'.image',mode='get',hdkey='restfreq')
 # ACHTUNG! Data-specific information required! 
 # If rest frequency values are not the same, use 'imreframe' 
 # command to set TP rest frequency to that of the 7m array:
-imreframe(imagename=ParentTP+'.image',restfreq='241843649999.99997Hz')
+imreframe(imagename=ParentTP+'.image',restfreq='241843649999.99997Hz') # Replace 241843649999.99997Hz with the rest frequency of the high-resolution / interferometric data.
 
 
 # Regrid TP image to match 7m image. (Do not change!)
@@ -82,7 +84,7 @@ viewer(Parent7m+'.image')
 # Specify the 'box' dimensions for your image by identifying
 # lower left and upper right pixel bounds.
 # FORMAT: Box = 'lower left x, lower left y, upper right x, upper right y'
-Box = '30,30,315,330'
+Box = '' # e.g. Box = '30,30,315,330'
 
 # Run imsubimage on everything.
 imsubimage(imagename=ParentTP+'.regrid', outfile=ParentTP+'.regrid.subimage', box=Box)
